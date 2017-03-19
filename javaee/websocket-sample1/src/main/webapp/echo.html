@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>WebSocket: Sample 1</title>
+</head>
+<body>
+ <form>
+  <fieldset>
+    <legend>Echo</legend>
+    <input id="txtMessage" type="text"><br>
+    <input onclick="doCloseConnection();" value="Disconnect" type="button">
+    <input onclick="doSendMessage();" value="Send" type="button">
+    <br>
+    <textarea  id="txtAreaEcho" rows="5" cols="30">
+	</textarea>
+  </fieldset>
+</form> 
+<script type="text/javascript">
+
+var webSocket = new WebSocket("ws://localhost:8180/websocket-sample1/myechoendpoint");
+
+var txtAreaEcho = document.getElementById("txtAreaEcho");
+
+txtAreaEcho.value = "";
+
+
+var msg = document.getElementById("txtMessage");
+
+
+webSocket.onopen = function(msgEvent)
+                   { 
+	                  txtAreaEcho.value += "Connected ... \n";
+                   };
+webSocket.onmessage = function(msgEvent)
+                     { 
+	                   txtAreaEcho.value += "Server : " + msgEvent.data + "\n";
+                     };
+webSocket.onclose = function(msgEvent)
+                     {
+	                  txtAreaEcho.value += "Disconnect ... \n";
+	                 };
+webSocket.onerror = function(msgEvent)
+                      { 
+	                    txtAreaEcho.value += "Error ... \n";
+	                  };
+
+
+/**
+ *  Send Message
+ */
+function doSendMessage()
+{
+	webSocket.send(msg.value);
+	txtAreaEcho.value += "Client : " + msg.value + "\n";
+	msg.value = "";
+}
+
+/**
+ *  Close Connection
+ */
+function doCloseConnection(){
+	webSocket.close();
+}
+</script>
+</body>
+</html>
